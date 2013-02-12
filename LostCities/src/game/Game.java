@@ -9,12 +9,14 @@ import player.Player;
 import player.action.ActionDump;
 import player.action.ActionDump.Action;
 import player.action.ActionPick;
+import ui.ConsoleHelper;
 import ui.ConsoleOutput;
 import card.AvailableCardStack;
 import card.BoardCardStack;
 import card.Card;
 import card.CardComparator;
 import card.Color;
+import card.ExpeditionCardStack;
 import card.Type;
 
 public class Game {
@@ -145,15 +147,14 @@ public class Game {
                 .getColor()));
         } else if (actionPick.getAction() == ActionPick.Action.PICK_FROM_CARD_STACK) {
             Card pickedCard = cardStack.pop();
+            activePlayer.addCardToHand(pickedCard);
             System.out.println();
             System.out.println("*** " + pickedCard.toString() + " picked ***");
 
-            activePlayer.addCardToHand(pickedCard);
         }
 
         System.out.println();
-        System.console()
-            .readLine("Press Enter to en turn...");
+        ConsoleHelper.prompt("Press Enter to en turn...");
         System.out.println();
     }
 
@@ -175,22 +176,14 @@ public class Game {
             ConsoleOutput.displayGame(this);
             ActionDump actionDump = new ActionDump();
             actionDump.setPlayer(activePlayer);
-            boolean validDump = false;
-            while (!validDump) {
-                activePlayer.doActionDump(actionDump);
-                validDump = isActionDumpValid(actionDump);
-                if (!validDump) {
-                    System.out.println("Illegal action! Do something else!");
-                } else {
-                    commitActionDump(actionDump);
-                }
-            }
-
+            actionDump.setAvailableCards(getPossibleExpeditionCards());
+            activePlayer.doActionDump(actionDump);
+            commitActionDump(actionDump);
             ConsoleOutput.displayGame(this);
-
             ActionPick actionPick = new ActionPick();
             actionPick.setPlayer(activePlayer);
-            activePlayer.doActionPick(actionPick, board);
+            actionPick.setAvailableCards(getAvailableBoardCards());
+            activePlayer.doActionPick(actionPick);
             commitActionPick(actionPick);
 
             changePlayer();
@@ -201,20 +194,29 @@ public class Game {
         ConsoleOutput.displayGame(this);
     }
 
-    private boolean isActionDumpValid(ActionDump actionDump) {
-        if (actionDump.getAction() == Action.CARD_TO_EXPEDITION) {
-
-            BoardCardStack boardCardStack = board.getBoardCardStack(actionDump.getCard()
-                .getColor());
+    private List<Card> getAvailableBoardCards() {
+        List<Card> availableBoardCards = new ArrayList<Card>();
+        for (BoardCardStack boardCardStack : board.getStacks()) {
             if (!boardCardStack.isEmpty()) {
-                Card topBoardStackCard = boardCardStack.peek();
-                return new CardComparator().compare(actionDump.getCard(), topBoardStackCard) >= 0;
-            } else {
-                return true;
+                availableBoardCards.add(boardCardStack.peek());
             }
-        } else {
-            return true;
         }
+        return availableBoardCards;
+    }
+
+    private List<Card> getPossibleExpeditionCards() {
+        List<Card> possibleExpeditionCards = new ArrayList<Card>();
+        for (Card card : activePlayer.getHand()) {
+            ExpeditionCardStack expeditionCardStack = activePlayer.getExpeditionStack(card.getColor());
+            if (expeditionCardStack.isEmpty()) {
+                possibleExpeditionCards.add(card);
+            } else {
+                if (new CardComparator().compare(expeditionCardStack.peek(), card) <= 0) {
+                    possibleExpeditionCards.add(card);
+                }
+            }
+        }
+        return possibleExpeditionCards;
     }
 
     private void resetGame() {

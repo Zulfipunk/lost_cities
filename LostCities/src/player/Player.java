@@ -1,7 +1,5 @@
 package player;
 
-import game.Board;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +37,7 @@ public abstract class Player {
 
     public abstract ActionDump doActionDump(ActionDump actionDump);
 
-    public abstract ActionPick doActionPick(ActionPick actionPick, Board board);
+    public abstract ActionPick doActionPick(ActionPick actionPick);
 
     public List<ExpeditionCardStack> getExpeditions() {
         return expeditions;

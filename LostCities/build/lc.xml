@@ -8,7 +8,7 @@
                 <attribute name="Main-Class" value="game.BootStrap"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="C:/Users/Antoine/Work/_Workspace/LostCities/bin"/>
+            <fileset dir="C:/Users/Antoine/Documents/GitHub/lost_cities/LostCities/bin"/>
         </jar>
     </target>
 </project>

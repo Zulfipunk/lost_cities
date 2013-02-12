@@ -21,6 +21,8 @@ public class ConsoleOutput {
 
     public static final String BOARD_EDGE;
 
+    public static final String SEPARATOR = "********************************************************************************";
+
     static {
         StringBuffer str = new StringBuffer();
         str.append("+");
@@ -75,12 +77,18 @@ public class ConsoleOutput {
     }
 
     public static void displayGame(Game game) {
+        System.out.println();
+        System.out.println(SEPARATOR);
+
+        System.out.println();
         displayBoard(game.getBoard());
         System.out.println();
         displayPlayerExpeditions(game.getActivePlayer());
         System.out.println();
         displayHand(game.getActivePlayer());
         System.out.println();
+        System.out.println(game.getActivePlayer()
+            .getName());
     }
 
     public static void displayHand(Player player) {
@@ -128,7 +136,7 @@ public class ConsoleOutput {
                 if (i < expeditionStrings.size()) {
                     str.append(expeditionStrings.get(i));
                 } else {
-                    str.append("      ");
+                    str.append("        ");
                 }
                 str.append(" ");
             }
@@ -162,7 +170,7 @@ public class ConsoleOutput {
     private static List<String> buildExpedition(ExpeditionCardStack expeditionCardStack) {
         List<String> expeditionStrings = new ArrayList<String>();
         for (Card card : expeditionCardStack) {
-            if (card.equals(expeditionCardStack.peek())) {
+            if (card == expeditionCardStack.peek()) {
                 expeditionStrings.addAll(buildCard(card));
             } else {
                 expeditionStrings.addAll(buildBottomCard(card));
