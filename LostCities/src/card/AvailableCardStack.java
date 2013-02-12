@@ -2,7 +2,6 @@ package card;
 
 import java.util.Stack;
 
-
 public class AvailableCardStack extends Stack<Card> {
 	/**
 	 * 

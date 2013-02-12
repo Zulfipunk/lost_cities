@@ -20,12 +20,10 @@ public class Board {
 		}
 	}
 
-	public void reset() {
-		for (ColorCardStack stack : stacks) {
-			stack.clear();
-		}
+	public void addCard(Card card) {
+		getBoardCardStack(card.getColor()).push(card);
 	}
-	
+
 	public BoardCardStack getBoardCardStack(Color color) {
 		for (BoardCardStack stack : stacks) {
 			if (stack.getColor() == color) {
@@ -34,17 +32,19 @@ public class Board {
 		}
 		return null;
 	}
-	
+
 	public List<BoardCardStack> getStacks() {
 		return stacks;
 	}
-	
-	public void addCard(Card card) {
-		getBoardCardStack(card.getColor()).push(card);
-	}
-	
+
 	public Card pickCard(Color color) {
 		return getBoardCardStack(color).pop();
+	}
+
+	public void reset() {
+		for (ColorCardStack stack : stacks) {
+			stack.clear();
+		}
 	}
 
 	@Override

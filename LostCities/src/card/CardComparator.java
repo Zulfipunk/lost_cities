@@ -21,8 +21,7 @@ public class CardComparator implements Comparator<Card> {
 				} else {
 					if (o1.getValue().intValue() > o2.getValue().intValue()) {
 						return 1;
-					} else if (o1.getValue().intValue() < o2.getValue()
-							.intValue()) {
+					} else if (o1.getValue().intValue() < o2.getValue().intValue()) {
 						return -1;
 					} else {
 						return 0;
