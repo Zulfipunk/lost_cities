@@ -1,5 +1,5 @@
 package card;
 
-public enum Type {
+public enum CardType {
 	BET, POINT
 }

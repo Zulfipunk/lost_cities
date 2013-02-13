@@ -14,7 +14,7 @@ import card.BoardCardStack;
 import card.Card;
 import card.Color;
 import card.ExpeditionCardStack;
-import card.Type;
+import card.CardType;
 
 public class ConsoleOutput {
 	public static final String CARD_TOP = ".------.";
@@ -63,14 +63,14 @@ public class ConsoleOutput {
 	private static List<String> buildBottomCard(Card card) {
 		List<String> cardStrings = new ArrayList<String>();
 		cardStrings.add(CARD_TOP);
-		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%6s", card.isBet() ? Type.BET.name() : card.getValue())));
+		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%6s", card.isBet() ? CardType.BET.name() : card.getValue())));
 		return cardStrings;
 	}
 
 	private static List<String> buildCard(Card card) {
 		List<String> cardStrings = new ArrayList<String>();
 		cardStrings.add(CARD_TOP);
-		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%6s", card.isBet() ? Type.BET.name() : card.getValue())));
+		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%6s", card.isBet() ? CardType.BET.name() : card.getValue())));
 		cardStrings.add(CARD_BODY.get(card.getColor()));
 		cardStrings.add(CARD_BODY.get(card.getColor()));
 		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%-6s", card.getColor())));
@@ -93,7 +93,7 @@ public class ConsoleOutput {
 	private static List<String> buildReverseBottomCard(Card card) {
 		List<String> cardStrings = new ArrayList<String>();
 
-		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%-6s", card.isBet() ? Type.BET.name() : card.getValue())));
+		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%-6s", card.isBet() ? CardType.BET.name() : card.getValue())));
 		cardStrings.add(CARD_BOTTOM);
 		return cardStrings;
 	}
@@ -104,7 +104,7 @@ public class ConsoleOutput {
 		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%6s", card.getColor())));
 		cardStrings.add(CARD_BODY.get(card.getColor()));
 		cardStrings.add(CARD_BODY.get(card.getColor()));
-		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%-6s", card.isBet() ? Type.BET.name() : card.getValue())));
+		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%-6s", card.isBet() ? CardType.BET.name() : card.getValue())));
 		cardStrings.add(CARD_BOTTOM);
 		return cardStrings;
 	}

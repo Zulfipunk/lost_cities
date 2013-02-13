@@ -3,8 +3,9 @@ package player;
 import java.util.ArrayList;
 import java.util.List;
 
-import player.action.ActionDump;
-import player.action.ActionPick;
+import action.Action;
+import action.dump.ActionDump;
+import action.pick.ActionPick;
 import card.Card;
 import card.Color;
 import card.ColorCardStack;
@@ -35,9 +36,21 @@ public abstract class Player {
 		hand.add(card);
 	}
 
-	public abstract ActionDump doActionDump(ActionDump actionDump);
+	public abstract Action doActionDump(ActionDump actionDump);
 
 	public abstract ActionPick doActionPick(ActionPick actionPick);
+
+	public int getExpeditionRawPoints(Color color) {
+		int points = 0;
+		if (!getExpeditionStack(color).isEmpty()) {
+			for (Card card : getExpeditionStack(color)) {
+				if (card.getColor() == color && card.getValue() != null) {
+					points += card.getValue();
+				}
+			}
+		}
+		return points;
+	}
 
 	public List<ExpeditionCardStack> getExpeditions() {
 		return expeditions;
@@ -56,6 +69,16 @@ public abstract class Player {
 		return hand;
 	}
 
+	public int getHandPoints(Color color) {
+		int points = 0;
+		for (Card card : getHand()) {
+			if (card.getColor() == color && card.getValue() != null) {
+				points += card.getValue();
+			}
+		}
+		return points;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -66,6 +89,10 @@ public abstract class Player {
 			score += expeditionCardStack.getScore();
 		}
 		return score;
+	}
+
+	public boolean hasExpedion(Color color) {
+		return !getExpeditionStack(color).isEmpty();
 	}
 
 	public Card pickCardFromExpedition(Color color) {

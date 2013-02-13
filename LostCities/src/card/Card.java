@@ -1,7 +1,7 @@
 package card;
 
 public class Card {
-	private Type type;
+	private CardType type;
 	private Color color;
 	private Integer value;
 
@@ -30,7 +30,7 @@ public class Card {
 		return color;
 	}
 
-	public Type getType() {
+	public CardType getType() {
 		return type;
 	}
 
@@ -39,7 +39,7 @@ public class Card {
 	}
 
 	public boolean isBet() {
-		return getType() == Type.BET;
+		return getType() == CardType.BET;
 	}
 
 	public boolean isHigherEquals(Card card) {
@@ -54,7 +54,7 @@ public class Card {
 		this.color = color;
 	}
 
-	public void setType(Type type) {
+	public void setType(CardType type) {
 		this.type = type;
 	}
 
@@ -63,9 +63,9 @@ public class Card {
 	}
 
 	public String toShortString() {
-		if (type == Type.BET) {
+		if (type == CardType.BET) {
 			return type.name();
-		} else if (type == Type.POINT) {
+		} else if (type == CardType.POINT) {
 			return String.valueOf(value);
 		} else {
 			return null;

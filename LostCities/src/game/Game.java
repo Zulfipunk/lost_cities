@@ -4,23 +4,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import player.BotPlayer;
 import player.Player;
-import player.action.ActionDump;
-import player.action.ActionDump.ActionDumpType;
-import player.action.ActionPick;
+import player.bot.StupidBotPlayer;
 import ui.ConsoleOutput;
+import action.dump.ActionDump;
+import action.dump.ActionDumpType;
+import action.pick.ActionPick;
+import action.pick.ActionPickType;
 import card.AvailableCardStack;
-import card.BoardCardStack;
 import card.Card;
 import card.Color;
-import card.ExpeditionCardStack;
-import card.Type;
+import card.CardType;
 
 public class Game {
 
 	private final static List<Card> availableCards;
-	private final static int ROUND_COUNT = 3;
+	// private final static int ROUND_COUNT = 3;
 	private final static int HAND_COUNT = 8;
 
 	private final AvailableCardStack cardStack;
@@ -39,13 +38,13 @@ public class Game {
 			for (int i = 0; i < 3; i++) {
 				Card card = new Card();
 				card.setColor(color);
-				card.setType(Type.BET);
+				card.setType(CardType.BET);
 				availableCards.add(card);
 			}
 			for (int i = 1; i < 11; i++) {
 				Card card = new Card();
 				card.setColor(color);
-				card.setType(Type.POINT);
+				card.setType(CardType.POINT);
 				card.setValue(i);
 				availableCards.add(card);
 			}
@@ -83,10 +82,10 @@ public class Game {
 
 	private Card commitActionPick(ActionPick actionPick) {
 		Card pickedCard = null;
-		if (actionPick.getAction() == ActionPick.ActionPickType.PICK_FROM_BOARD) {
+		if (actionPick.getActionType() == ActionPickType.PICK_FROM_BOARD) {
 			pickedCard = board.pickCard(actionPick.getCard().getColor());
 			activePlayer.addCardToHand(pickedCard);
-		} else if (actionPick.getAction() == ActionPick.ActionPickType.PICK_FROM_CARD_STACK) {
+		} else if (actionPick.getActionType() == ActionPickType.PICK_FROM_CARD_STACK) {
 			pickedCard = cardStack.pop();
 			activePlayer.addCardToHand(pickedCard);
 		}
@@ -121,10 +120,10 @@ public class Game {
 	}
 
 	public void doPlay() {
-		Player player1 = new BotPlayer();
+		Player player1 = new StupidBotPlayer();
 		player1.setName("Antoine");
 		players.add(player1);
-		Player player2 = new BotPlayer();
+		Player player2 = new StupidBotPlayer();
 		player2.setName("Laurence");
 		players.add(player2);
 
@@ -144,15 +143,11 @@ public class Game {
 				System.out.println(activePlayer.getName() + "'s turn...");
 			}
 			ConsoleOutput.displayGame(this, activePlayer);
-			ActionDump actionDump = new ActionDump();
-			actionDump.setPlayer(activePlayer);
-			actionDump.setAvailableCards(getPossibleExpeditionCards());
+			ActionDump actionDump = new ActionDump(this);
 			activePlayer.doActionDump(actionDump);
 			commitActionDump(actionDump);
 			ConsoleOutput.displayGame(this, activePlayer);
-			ActionPick actionPick = new ActionPick();
-			actionPick.setPlayer(activePlayer);
-			actionPick.setAvailableCards(getAvailableBoardCards());
+			ActionPick actionPick = new ActionPick(this);
 			activePlayer.doActionPick(actionPick);
 			Card pickedCard = commitActionPick(actionPick);
 			ConsoleOutput.displayPickedCard(pickedCard, activePlayer);
@@ -173,16 +168,6 @@ public class Game {
 		return activePlayer;
 	}
 
-	private List<Card> getAvailableBoardCards() {
-		List<Card> availableBoardCards = new ArrayList<Card>();
-		for (BoardCardStack boardCardStack : board.getStacks()) {
-			if (!boardCardStack.isEmpty()) {
-				availableBoardCards.add(boardCardStack.peek());
-			}
-		}
-		return availableBoardCards;
-	}
-
 	public List<Card> getAvailablecards() {
 		return availableCards;
 	}
@@ -201,21 +186,6 @@ public class Game {
 
 	public List<Player> getPlayers() {
 		return players;
-	}
-
-	private List<Card> getPossibleExpeditionCards() {
-		List<Card> possibleExpeditionCards = new ArrayList<Card>();
-		for (Card card : activePlayer.getHand()) {
-			ExpeditionCardStack expeditionCardStack = activePlayer.getExpeditionStack(card.getColor());
-			if (expeditionCardStack.isEmpty()) {
-				possibleExpeditionCards.add(card);
-			} else {
-				if (card.isHigherEquals(expeditionCardStack.peek())) {
-					possibleExpeditionCards.add(card);
-				}
-			}
-		}
-		return possibleExpeditionCards;
 	}
 
 	public List<Round> getRounds() {

@@ -1,10 +1,11 @@
 package player;
 
-import player.action.ActionDump;
-import player.action.ActionDump.ActionDumpType;
-import player.action.ActionPick;
-import player.action.ActionPick.ActionPickType;
 import ui.ConsoleHelper;
+import action.Action;
+import action.dump.ActionDump;
+import action.dump.ActionDumpType;
+import action.pick.ActionPick;
+import action.pick.ActionPickType;
 import card.Card;
 
 public class HumanPlayer extends Player {
@@ -33,7 +34,7 @@ public class HumanPlayer extends Player {
 	}
 
 	@Override
-	public ActionDump doActionDump(ActionDump actionDump) {
+	public Action doActionDump(ActionDump actionDump) {
 		while (true) {
 			try {
 				actionDump.setAction(selectActionDump(actionDump));
@@ -50,8 +51,8 @@ public class HumanPlayer extends Player {
 	public ActionPick doActionPick(ActionPick actionPick) {
 		while (true) {
 			try {
-				actionPick.setAction(selectActionPick(actionPick));
-				if (actionPick.getAction() == ActionPick.ActionPickType.PICK_FROM_BOARD) {
+				actionPick.setActionType(selectActionPick(actionPick));
+				if (actionPick.getActionType() == ActionPickType.PICK_FROM_BOARD) {
 					actionPick.setCard(selectCardPick(actionPick));
 				}
 				return actionPick;
@@ -63,9 +64,9 @@ public class HumanPlayer extends Player {
 
 	private ActionDumpType selectActionDump(ActionDump actionDump) {
 		while (true) {
-			String strAnswer = ConsoleHelper.prompt(actionDump.getPlayer().getName() + ", " + PROMPT_DUMP);
+			String strAnswer = ConsoleHelper.prompt(this.getName() + ", " + PROMPT_DUMP);
 			try {
-				return player.action.ActionDump.ActionDumpType.values()[Integer.valueOf(strAnswer) - 1];
+				return ActionDumpType.values()[Integer.valueOf(strAnswer) - 1];
 			} catch (NumberFormatException e) {
 				System.out.println("Wrong choice. Please try again!");
 			} catch (IndexOutOfBoundsException e) {
@@ -95,7 +96,7 @@ public class HumanPlayer extends Player {
 			str.append("Select card:");
 			str.append("\r\n");
 			int i = 1;
-			for (Card card : actionDump.getAvailableCards()) {
+			for (Card card : actionDump.getPossibleExpeditionCards()) {
 				str.append(i++);
 				str.append(". ");
 				str.append(card.toString());
@@ -109,7 +110,7 @@ public class HumanPlayer extends Player {
 				if (intAnswer == 0) {
 					throw new Exception("cancel");
 				} else {
-					return actionDump.getAvailableCards().get(intAnswer - 1);
+					return actionDump.getPossibleExpeditionCards().get(intAnswer - 1);
 				}
 			} catch (NumberFormatException e) {
 				System.out.println("Wrong choice. Please try again!");
@@ -126,7 +127,7 @@ public class HumanPlayer extends Player {
 			str.append("Select card:");
 			str.append("\r\n");
 			int i = 1;
-			for (Card card : actionPick.getAvailableCards()) {
+			for (Card card : actionPick.getAvailableBoardCards()) {
 				str.append(i++);
 				str.append(". ");
 				str.append(card.toString());
@@ -140,7 +141,7 @@ public class HumanPlayer extends Player {
 				if (intAnswer == 0) {
 					throw new Exception("cancel");
 				} else {
-					return actionPick.getAvailableCards().get(intAnswer - 1);
+					return actionPick.getAvailableBoardCards().get(intAnswer - 1);
 				}
 			} catch (NumberFormatException e) {
 				System.out.println("Wrong choice. Please try again!");

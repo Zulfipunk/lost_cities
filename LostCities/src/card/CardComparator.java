@@ -16,7 +16,7 @@ public class CardComparator implements Comparator<Card> {
 			} else if (o1.getType().ordinal() < o2.getType().ordinal()) {
 				return -1;
 			} else {
-				if (o1.getType() == Type.BET) {
+				if (o1.getType() == CardType.BET) {
 					return 0;
 				} else {
 					if (o1.getValue().intValue() > o2.getValue().intValue()) {
