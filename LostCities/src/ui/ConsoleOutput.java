@@ -4,7 +4,6 @@ import game.Board;
 import game.Game;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,20 +93,31 @@ public class ConsoleOutput {
 	private static List<String> buildReverseBottomCard(Card card) {
 		List<String> cardStrings = new ArrayList<String>();
 
-		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%6s", card.isBet() ? Type.BET.name() : card.getValue())));
+		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%-6s", card.isBet() ? Type.BET.name() : card.getValue())));
 		cardStrings.add(CARD_BOTTOM);
 		return cardStrings;
 	}
 
 	private static List<String> buildReverseCard(Card card) {
-		List<String> strings = buildCard(card);
-		Collections.reverse(strings);
-		return strings;
+		List<String> cardStrings = new ArrayList<String>();
+		cardStrings.add(CARD_TOP);
+		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%6s", card.getColor())));
+		cardStrings.add(CARD_BODY.get(card.getColor()));
+		cardStrings.add(CARD_BODY.get(card.getColor()));
+		cardStrings.add(CARD_EMPTY_BODY.replace("      ", String.format("%-6s", card.isBet() ? Type.BET.name() : card.getValue())));
+		cardStrings.add(CARD_BOTTOM);
+		return cardStrings;
 	}
 
 	private static List<String> buildReverseExpedition(ExpeditionCardStack expeditionCardStack) {
+
+		List<Card> cardsReversed = new ArrayList<Card>();
+		for (int i = expeditionCardStack.size() - 1; i >= 0; i--) {
+			cardsReversed.add(expeditionCardStack.get(i));
+		}
+
 		List<String> expeditionStrings = new ArrayList<String>();
-		for (Card card : expeditionCardStack) {
+		for (Card card : cardsReversed) {
 			if (card == expeditionCardStack.peek()) {
 				expeditionStrings.addAll(buildReverseCard(card));
 			} else {
@@ -231,10 +241,13 @@ public class ConsoleOutput {
 			StringBuilder str = new StringBuilder();
 			str.append("  ");
 			for (List<String> expeditionStrings : cardsStrings) {
-				if (i < expeditionStrings.size()) {
+				int offset = rowCount - expeditionStrings.size();
+				if (offset == 0 && i < expeditionStrings.size()) {
 					str.append(expeditionStrings.get(i));
-				} else {
+				} else if (i < offset) {
 					str.append("        ");
+				} else {
+					str.append(expeditionStrings.get(i - offset));
 				}
 				str.append(" ");
 			}
